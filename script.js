@@ -1,98 +1,108 @@
 /* 
-** The Gameboard rapresents the state of the board 
+** Factory functions:
+** > createGameboard() -> board.
+** > > getBoard()
+** > > dropSign()
+** > > printBoard()
+**
+** > createGameController() -> game.
+** > > switchTurn()
+** > > printNewRound()
+** > > playRound()
+**
+** > createScreenController() -> screen.
+** > > updateScreen()
+** > > clickHandler()
+*/
+
+/* 
+** The gameboard rapresents the state of the board 
 ** each square holds a Cell
 ** and we add a dropSign method to be able to add Cells to squares
 */
 
 
-function Gameboard() {
+
+/* 
+** A cell is a board square. Every cell can have 3 cellValue:
+** 0: unselected square
+** 1: playerOne's cell
+** 3: playerTwo's cell
+*/
+
+function createCell() {
+    let cellValue = 0
+
+    const addCellValue =  (playerValue) => {
+        cellValue = playerValue
+    }
+
+    const getCellValue = () => cellValue
+
+    return {
+        addCellValue,
+        getCellValue
+    }
+}
+
+function createGameboard() {
     const ROWS = 3
     const COLUMNS = 3
     const board = []
 
-    // Create a 2D array that represent the state of the board
-    // ROW = 0 is the top row
-    // COLUMN = 0  is the left-most column
     for (let i = 0; i < ROWS; i++) {
         board[i] = []
         for (let j = 0; j < COLUMNS; j++) {
-            board[i].push(0)
+            board[i].push(createCell())
         }
     }
 
+    // getBoard is an arrow function.
+    // Its purpose is to provide external access to the board array 
+    // from the outside od createGameboard() factory function
     const getBoard = () => board
 
-    // dropSign checks if the selected square is unselected
-    // THEN change that cell's value to the player sign
-    // empty cell: 0
-    // first player: 1
-    // second player: 3
-    const dropSign = (row, column, player, div) => {
-        if (board[row][column] === 0) {
-            board[row][column] = player.value;
-            screen.renderSign(div, player.sign)
+    const dropSign = (row, column, player) => {
+
+        const availableCells = board.filter((row) => row[column].getCellValue() === 0).map(row => row[column])
+        if (!availableCells.length) return
+
+        if (board[row][column].getCellValue() === 0) {
+            board[row][column].addCellValue(player);
+            return true
+        }
+        else {
+            return false
+        }
+        /* if (board[row][column] === 0) {
+            board[row][column].addCellValue(player);
+            return true
         } else {
-            alert('this cell is already taken')
             return false;
-        }
-        console.log(board)
+        } */
     }
 
-    function checksum(row, column) {
-        let i = parseInt(row)      
-        let j = parseInt(column)
-        let columnSum = 0
-        let rowSum = 0
-        let diagonalSum = 0
-        let antidiagonalSum = 0
-        if (i + j == 2) {
-            for (let k = 0; k < ROWS; k++) {
-                diagonalSum += board[k][ROWS - 1 - k];
-            }
-        } else if (i === j) {
-            for (let k = 0; k < ROWS; k++) {
-                antidiagonalSum += board[k][k]
-            }
-        } 
-        for (let i = 0; i < COLUMNS; i++) {
-            rowSum += board[row][i];
-        }
-        for (let i = 0; i < ROWS; i++) {
-            columnSum += board[i][column];
-        }
-        return [rowSum, columnSum, diagonalSum, antidiagonalSum];
+    const printBoard = () => {
+        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getCellValue()))
+        console.log(boardWithCellValues)
     }
 
-    /* 
-    ** Check if active player wins
-    ** If total sum of respective rows, colum or diagonals is:
-    ** 3: first player wins
-    ** 9: second player wins
-    */ 
-    function isWinner(row, column, activePlayer) {
-        let sum = checksum(row, column);
-        for (let el of sum) {
-            if (el === activePlayer.value * 3) {
-                
-                return true
-            }
-        }
-        console.log(sum)
-        return false;
+    return {
+        getBoard,
+        dropSign,
+        printBoard,
     }
-
-    function isGameOver() {
-        const hasZero = board.some(row => row.includes(0));
-        if (hasZero) return false
-        return true
-    }
-    
-    return { getBoard, dropSign, checksum, isWinner, isGameOver }
-    
 }
 
-function GameController(playerOneName = "Player One", playerTwoName = "Player Two") {
-    const board = Gameboard()
+function createGameController(
+    // I use these parameters to let the user customize the game
+    // I can prompt the user for a name and call the function with:
+    // const gameController = createGameController("Alice", "Computer")
+    // If I simply call createGameController(), default names will be used
+    playerOneName = "Player One",
+    playerTwoName = "Player Two"
+){
+    const board = createGameboard()
 
     const players = [
         {
@@ -118,73 +128,102 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
             activePlayer = players[0]
         }
     }
-
     const getActivePlayer = () => activePlayer
 
-    const playRound = (row, column, div) => {
+    const printNewRound = () => {
+        board.printBoard()
+    }
 
-        dropSign = board.dropSign(row, column, activePlayer, div)
-        if (dropSign === false) {
-            switchTurn()
-        }
+    const playRound = (row, column) => {
+        board.dropSign(row, column, getActivePlayer().value)
         
-        if (board.isWinner(row, column, activePlayer)) {
-            activePlayer.points++
-            console.log(activePlayer.points)
-            return console.log(`${activePlayer.name} is winner`)
+        // check for winner and handle the win message
+        /* let sum = [0, 0, 0, 0]
+        if (row + column == 2) {
+            for (let k = 0; k < 3; k++) {
+                sum[2] += board[k][3 - 1 - k].getCellValue();
+            }
+        } else if (row === column) {
+            for (let k = 0; k < 3; k++) {
+                sum[3] += board[k][k].getCellValue()
+            }
         } 
-
-        if (board.isGameOver() && board.isWinner(row, column, activePlayer) === false) {
-            console.log("it's a tie")
-            resetRound()
+        for (let i = 0; i < 3; i++) {
+            sum[0] += board[row][i].getCellValue();
         }
+        for (let i = 0; i < 3; i++) {
+            sum[1] += board[i][column].getCellValue();
+        }
+        for (let el of sum) {
+            if (el === activePlayer.value * 3) {
+                console.log("winner " + activePlayer.name)
+            }
+        } */
 
         switchTurn()
+        printNewRound()
     }
 
-    const resetRound = () => {
-        const ROWS = 3;
-        const COLUMNS = 3;
+    printNewRound()
 
-        // Reset the game board
-        for (let i = 0; i < ROWS; i++) {
-            for (let j = 0; j < COLUMNS; j++) {
-                board.getBoard[i][j] = 0 
-            }
-        }
+    return {
+        playRound,
+        getActivePlayer,
+        getBoard: board.getBoard
     }
-    return { playRound, getActivePlayer }
 }
-
-
-function ScreenController() {
-    const game = GameController()
-
-    const cellDiv = document.querySelectorAll(".cell")
-    cellDiv.forEach((div) => {
-    div.addEventListener(
-        'click',
-        function(div) {
-        let row = div.target.dataset.row
-        let column = div.target.dataset.column
-        game.playRound(row, column, div)
-        })
-    })
-
-    function renderSign(div, sign) {
-        let id = div.target.id
-        div = document.getElementById(id)
-        console.log(div)
-        if (sign === "X") {
-            div.classList.add('x-sign')
-        } else if (sign === "O") {
-            div.classList.add('o-sign')
-        }
-    }
-
     
+function createScreenController() {
+    const game = createGameController()
+    const boardDiv = document.querySelector(".board")
+    const turnDiv = document.querySelector(".turn")
 
-    return { renderSign }
+    const updateScreen = () => {
+        // clear the board
+        boardDiv.textContent = ""
+
+        // get the newest board version and player turn
+        const board = game.getBoard()
+        const activePlayer = game.getActivePlayer()
+
+        // display player's turn
+        turnDiv.innerHTML = `It's ${activePlayer.name} turn`
+
+        // render board divs
+        board.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                const cellBtn = document.createElement('button')
+                cellBtn.classList.add("cell")
+                cellBtn.dataset.row = i
+                cellBtn.dataset.column = j
+
+                if (cell.getCellValue() === 1) {
+                    cellBtn.classList.add("x-sign")
+                } else if (cell.getCellValue() === 3) {
+                    cellBtn.classList.add("o-sign")
+                }
+
+                boardDiv.appendChild(cellBtn)
+            })
+        })
+
+    }
+
+    // add event listeners for the board
+    function clickHandler(e) {
+        const selectedRow = e.target.dataset.row
+        const selectedColumn = e.target.dataset.column
+        console.log(e)
+        if (!selectedRow || !selectedColumn) return
+
+        game.playRound(selectedRow, selectedColumn)
+        updateScreen()
+    }
+
+    boardDiv.addEventListener('click', clickHandler)
+
+    // initial render
+    updateScreen()
 }
 
-const screen = ScreenController()
+createScreenController()
