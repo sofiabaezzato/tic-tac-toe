@@ -16,6 +16,7 @@ body {
     font-family: var(--body-font);
     color: var(--neutral-color);
     scroll-behavior: smooth;
+    background-color: var(--first-color);
 }
 
 button {
@@ -76,7 +77,7 @@ img {
 .board {
     position: relative;
     width: 350px;
-    height: 350px;
+    min-height: 350px;
     font-size: var(--normal-font-size);
 
     display: grid;
@@ -87,20 +88,11 @@ img {
 
 }
 
-/* .div1 { grid-area: 1 / 1 / 2 / 2; }
-.div2 { grid-area: 1 / 2 / 2 / 3; }
-.div3 { grid-area: 1 / 3 / 2 / 4; }
-.div4 { grid-area: 2 / 1 / 3 / 2; }
-.div5 { grid-area: 2 / 2 / 3 / 3; }
-.div6 { grid-area: 2 / 3 / 3 / 4; }
-.div7 { grid-area: 3 / 1 / 4 / 2; }
-.div8 { grid-area: 3 / 2 / 4 / 3; }
-.div9 { grid-area: 3 / 3 / 4 / 4; } */
-
 .cell {
     background-color: var(--second-color);
     box-shadow: -8px 8px #042221;
     border: none;
+    height: 100%;
 }
 
 .o-sign {
@@ -119,48 +111,183 @@ img {
 
 .cell:hover {
     background-color: var(--third-color);
+    box-shadow: -12px 12px #042221;
+    transition: .3s ease-in-out;
 }
 
 .modal {
-    width: 100%;
-    height: 200px;
-    background-color: var(--third-color);
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--first-color);
     display: none;
     flex-direction: column;
     position: fixed;
     z-index: 100;
     align-items: center;
     justify-content: center;
-    top: 50%;
-    margin-top: -100px;
+    gap: 4rem;
+}
+
+.overlay {
+    width: 100vw;
+    height: 100vh;
+    background-color: #042221;
+    opacity: 0.4;
+    position: fixed;
+    display: flex;
+    z-index: 10;
+}
+
+.title {
+    font-size: 4rem;
+    align-items: center;
+    text-align: center;
 }
 
 .btn {
-    
+    background-color: var(--second-color);
+    box-shadow: -8px 8px #042221;
+    border: none;
+    color: var(--neutral-color);
+    padding: 16px 28px;
+    font-family: var(--body-font);
+    font-weight: var(--font-medium);
+    font-size: var(--h3-font-size);
+    transition: .3s ease-in-out;
+
+}
+
+.btn:hover {
+    background-color: var(--third-color);
+    box-shadow: -12px 12px #042221;
+    transition: .3s ease-in-out;
+}
+
+.score-container {
+    display: flex;
+    width: 350px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.points-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    border: none;
+    align-items: center;
+    gap: 10px;
+    color: var(--first-color);
+    font-weight: var(--font-medium);
+}
+
+.points-container.player-one {
+    background-color: var(--teal-color);
+    box-shadow: -8px 8px #15645a;
+
+}
+
+.points-container.player-two {
+    background-color: var(--yellow-color);
+    box-shadow: -8px 8px #a0820d;
+}
+
+.points {
+    font-size: var(--h2-font-size);
+    font-weight: var(--font-medium);
+}
+
+.header {
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header > .btn {
+    background-image: url(./img/arrow.svg);
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 2rem 2rem;
+}
+
+.logo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+    max-height: 60px;
+
+}
+
+.o-logo {
+    width: 46px;
+    height: 46px;
+    justify-self: center;
+}
+
+.x-logo {
+    width: 54px;
+    height: 54px;
+    justify-self: center;
+}
+
+
+.turn {
+    font-size: var(--h3-font-size);
+    font-weight: var(--font-medium);
+    justify-self: center;
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* 
+** Media query
+*/
 
 @media (max-width: 360px) {
+
+    .page-container {
+        gap: 2rem;
+    }
+
     .board {
         width: 300px;
-        height: 300px;
+        min-height: 300px;
+    }
+
+    .score-container {
+        flex-direction: column;
+        gap: 20px;
+        max-width: 100vw;
+        margin-bottom: 4rem;
+    }
+
+    .header {
+
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    #resetBtn {
+        background-size: 25px;
+        padding: 2rem 2rem;
+    }
+
+    .title {
+        font-size: 2rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .btn {
+        font-size: var(--normal-font-size);
+    }
+
+    .turn {
+        font-size: var(--normal-font-size);
     }
 }
