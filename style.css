@@ -64,13 +64,15 @@ img {
 .page-container {
     position: absolute;
     background-color: var(--first-color);
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 6rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 
 }
 
@@ -199,6 +201,7 @@ img {
 
 .header {
     width: 60%;
+    min-width: 350px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -238,6 +241,7 @@ img {
     font-size: var(--h3-font-size);
     font-weight: var(--font-medium);
     justify-self: center;
+    text-align: center;
 }
 
 
