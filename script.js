@@ -78,7 +78,7 @@ function createGameboard() {
 
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getCellValue()))
-        console.log(boardWithCellValues)
+        /* console.log(boardWithCellValues) */
     }
 
     return {
@@ -264,7 +264,7 @@ function createScreenController() {
     function clickHandler(e) {
         const selectedRow = e.target.dataset.row
         const selectedColumn = e.target.dataset.column
-        console.log(e)
+        /* console.log(e) */
         if (!selectedRow || !selectedColumn) return
 
         game.playRound(selectedRow, selectedColumn)
@@ -335,7 +335,7 @@ function createScreenController() {
     function resetGame() {
         game.resetBoard()
         game.players.forEach(player => player.points = 0)
-        console.log(game.players)
+        /* console.log(game.players) */
         updateScreen()
     }
     
