@@ -205,6 +205,7 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .header > .btn {
@@ -251,6 +252,20 @@ img {
 ** Media query
 */
 
+@media (max-width: 500px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .btn {
+        font-size: var(--normal-font-size);
+    }
+
+    .turn {
+        font-size: var(--normal-font-size);
+    }
+}
+
 @media (max-width: 360px) {
 
     .page-container {
@@ -270,7 +285,6 @@ img {
     }
 
     .header {
-
         flex-direction: column;
         justify-content: center;
         gap: 1rem;
@@ -279,19 +293,5 @@ img {
     #resetBtn {
         background-size: 25px;
         padding: 2rem 2rem;
-    }
-
-    .title {
-        font-size: 2rem;
-        align-items: center;
-        text-align: center;
-    }
-
-    .btn {
-        font-size: var(--normal-font-size);
-    }
-
-    .turn {
-        font-size: var(--normal-font-size);
     }
 }
