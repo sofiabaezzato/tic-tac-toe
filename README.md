@@ -19,6 +19,11 @@ Check out the live demo of the Tic-Tac-Toe game [here](https://sofiabaezzato.git
 - Keeps track of the players' points
 - Restart game button
 
+## Future Upgrades
+
+- Player vs Computer integration
+- Players' custom name input
+
 
 
 
